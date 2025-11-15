@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sridhar-echo-app-ingress
+  namespace: sridhar-eks-activity
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    external-dns.alpha.kubernetes.io/hostname: "sridhar-echoapp.sctp-sandbox.com" # Route53 Record
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "sridhar-echoapp.sctp-sandbox.com" # Route53 Record
+      secretName: sridhar-sctp-tls
+  rules:
+  - host: "sridhar-echoapp.sctp-sandbox.com" # Route53 Record
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sridhar-echo-service
+            port:
+              number: 80
